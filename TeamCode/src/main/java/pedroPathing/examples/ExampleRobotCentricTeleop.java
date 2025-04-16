@@ -5,6 +5,7 @@ import android.provider.SyncStateContract;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -19,6 +20,7 @@ import pedroPathing.constants.LConstants;
  */
 
 @TeleOp(name = "Example Robot-Centric Teleop", group = "Examples")
+@Disabled
 public class ExampleRobotCentricTeleop extends OpMode {
     private Follower follower;
     private final Pose startPose = new Pose(0,0,0);
