@@ -23,14 +23,7 @@ public class test extends LinearOpMode {
     private DcMotor rotatieBratIO = null;
 
     private int DirectieMiscareBrat = 0;
-    private final boolean isDebugMode = true;
     private double moveSpeed = 1;
-    private double idleSpeed = 0.4;
-
-    private boolean wasGamepad1aPressed = false;
-    private boolean wasGamepad1bPressed = false;
-    private boolean wasGamepad1xPressed = false;
-    private boolean wasGamepad1yPressed = false;
     private boolean wasGamepad1upPressed = false;
     private boolean wasGamepad1downPressed = false;
     private boolean wasGamepad1leftPressed = false;
@@ -116,17 +109,6 @@ public class test extends LinearOpMode {
                 rightFrontDrive.setPower(rightFrontPower);
                 leftBackDrive.setPower(leftBackPower);
                 rightBackDrive.setPower(rightBackPower);
-            }
-            else if (isDebugMode)
-            {
-                if (gamepad1.y && gamepad1.x) leftFrontDrive.setPower(speed);
-                else leftFrontDrive.setPower(0);
-                if (gamepad1.y && gamepad1.b) rightFrontDrive.setPower(speed);
-                else rightFrontDrive.setPower(0);
-                if (gamepad1.a && gamepad1.x) leftBackDrive.setPower(speed);
-                else leftBackDrive.setPower(0);
-                if (gamepad1.a && gamepad1.b) rightBackDrive.setPower(speed);
-                else rightBackDrive.setPower(0);
             }
 */
         }
