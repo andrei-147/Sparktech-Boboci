@@ -1,6 +1,5 @@
 package mainCode;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,48 +15,79 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class test extends LinearOpMode {
 
+    private DcMotor rightFrontDrive = null;
+    private DcMotor leftFrontDrive = null;
+    private DcMotor rightBackDrive = null;
+    private DcMotor leftBackDrive = null;
 
-    private DcMotor RightFrontDrive = null;
+    private DcMotor rotatieBratIO = null;
 
-    private DcMotor LeftFrontDrive = null;
+    private int DirectieMiscareBrat = 0;
+    private final boolean isDebugMode = true;
+    private double moveSpeed = 1;
+    private double idleSpeed = 0.4;
 
-    private DcMotor RightBackDrive = null;
-
-    private DcMotor LeftBackDrive = null;
-
-    private final double speed = 0.6;
+    private boolean wasGamepad1aPressed = false;
+    private boolean wasGamepad1bPressed = false;
+    private boolean wasGamepad1xPressed = false;
+    private boolean wasGamepad1yPressed = false;
+    private boolean wasGamepad1upPressed = false;
+    private boolean wasGamepad1downPressed = false;
+    private boolean wasGamepad1leftPressed = false;
+    private boolean wasGamepad1rightPressed = false;
 
     @Override
-
     public void runOpMode()
     {
-        RightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        rotatieBratIO = hardwareMap.get(DcMotor.class, "rotatieBratIO");
 
-        LeftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+        if (rotatieBratIO == null) telemetry.addData("Motors", "rotatieBratIO is null");
+        /*
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
 
-        RightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        LeftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-
-
-        RightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        RightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        LeftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        LeftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-
-        if (RightFrontDrive == null) telemetry.addData("Motors", "RightFront is null");
-        if (RightBackDrive == null) telemetry.addData("Motors", "RightBack is null");
-        if (LeftFrontDrive == null) telemetry.addData("Motors", "LeftFront is null");
-        if (LeftBackDrive == null) telemetry.addData("Motors", "LeftBack is null");
-
+        // if (rightFrontDrive == null) telemetry.addData("Motors", "RightFront is null");
+        if (rightBackDrive == null) telemetry.addData("Motors", "RightBack is null");
+        if (leftFrontDrive == null) telemetry.addData("Motors", "LeftFront is null");
+        if (leftBackDrive == null) telemetry.addData("Motors", "LeftBack is null");
+*/
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
         telemetry.addData("Status", "Running");
+        telemetry.update();
 
         while(opModeIsActive())
         {
+            DirectieMiscareBrat = 0;
+            if (gamepad1.y) DirectieMiscareBrat += 1;
+            if (gamepad1.a) DirectieMiscareBrat -= 1;
+            rotatieBratIO.setPower(moveSpeed * DirectieMiscareBrat);
+
+            if (gamepad1.dpad_up && !wasGamepad1upPressed) wasGamepad1upPressed = true;
+            if (!gamepad1.dpad_up && wasGamepad1upPressed) moveSpeed += 0.1;
+            if (!gamepad1.dpad_up) wasGamepad1upPressed = false;
+
+            if (gamepad1.dpad_down && !wasGamepad1downPressed) wasGamepad1downPressed = true;
+            if (!gamepad1.dpad_down && wasGamepad1downPressed) moveSpeed -= 0.1;
+            if (!gamepad1.dpad_down) wasGamepad1downPressed = false;
+
+            if (moveSpeed < 0.1) moveSpeed = 0.1;
+            if (moveSpeed > 1) moveSpeed = 1;
+
+            telemetry.addData("Viteza Miscare Brat", moveSpeed);
+
+            telemetry.update();
+
+            /*
             if (gamepad1.left_stick_x * gamepad1.left_stick_y != 0)
             {
                 double max;
@@ -82,23 +112,23 @@ public class test extends LinearOpMode {
                     rightBackPower /= max;
                 }
 
-                LeftFrontDrive.setPower(leftFrontPower);
-                RightFrontDrive.setPower(rightFrontPower);
-                LeftBackDrive.setPower(leftBackPower);
-                RightBackDrive.setPower(rightBackPower);
+                leftFrontDrive.setPower(leftFrontPower);
+                rightFrontDrive.setPower(rightFrontPower);
+                leftBackDrive.setPower(leftBackPower);
+                rightBackDrive.setPower(rightBackPower);
             }
-            else
+            else if (isDebugMode)
             {
-                if (gamepad1.y && gamepad1.x) LeftFrontDrive.setPower(speed);
-                else LeftFrontDrive.setPower(0);
-                if (gamepad1.y && gamepad1.b) RightFrontDrive.setPower(speed);
-                else RightFrontDrive.setPower(0);
-                if (gamepad1.a && gamepad1.x) LeftBackDrive.setPower(speed);
-                else LeftBackDrive.setPower(0);
-                if (gamepad1.a && gamepad1.b) RightBackDrive.setPower(speed);
-                else RightBackDrive.setPower(0);
-
+                if (gamepad1.y && gamepad1.x) leftFrontDrive.setPower(speed);
+                else leftFrontDrive.setPower(0);
+                if (gamepad1.y && gamepad1.b) rightFrontDrive.setPower(speed);
+                else rightFrontDrive.setPower(0);
+                if (gamepad1.a && gamepad1.x) leftBackDrive.setPower(speed);
+                else leftBackDrive.setPower(0);
+                if (gamepad1.a && gamepad1.b) rightBackDrive.setPower(speed);
+                else rightBackDrive.setPower(0);
             }
+*/
         }
 
 
