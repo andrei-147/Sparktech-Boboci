@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp(name="TeleOP test", group="Linear OpMode")
 
 /*
-* TO-DO LIST :
+* TO-DO LIST:
 *
 * - sa modificam codul astfel incat sa respecte toate conventiile
 * */
