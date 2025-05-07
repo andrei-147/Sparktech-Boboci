@@ -1,78 +1,80 @@
-/*
-
 package mainCode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import java.lang.Math;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
-@Disabled
+@TeleOp(name="TeleOP Sasiu", group="Linear OpMode")
 
-public class TeleOP extends LinearOpMode {
+/*
+ * TO-DO LIST:
+ *
+ * - sa modificam codul astfel incat sa respecte toate conventiile
+ * */
 
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
+
+public class test extends LinearOpMode {
+
     private DcMotor rightFrontDrive = null;
+    private DcMotor leftFrontDrive = null;
     private DcMotor rightBackDrive = null;
+    private DcMotor leftBackDrive = null;
+    private double speed = 1;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
-        runtime.reset();
+        telemetry.addData("Status", "Running");
+        telemetry.update();
 
-        while (opModeIsActive()) {
+        while(opModeIsActive())
+        {
             double max;
 
-            double axial   = -gamepad1.left_stick_y;
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double straight = -gamepad1.left_stick_y;
+            double lateral = gamepad1.left_stick_x;
+            double orientation = gamepad1.right_stick_x;
 
-            double leftFrontPower  = axial + lateral + yaw;
-            double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
+            double leftFrontPower = speed * (straight + lateral + orientation);
+            double rightFrontPower = speed * (straight - lateral - orientation);
+            double leftBackPower = speed * (straight - lateral + orientation);
+            double rightBackPower = speed * (straight + lateral - orientation);
 
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
 
             if (max > 1.0) {
-                leftFrontPower  /= max;
+                leftFrontPower /= max;
                 rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
             }
 
             leftFrontDrive.setPower(leftFrontPower);
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
-
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.update();
         }
+
+
     }
 
-}
 
-*/
+}

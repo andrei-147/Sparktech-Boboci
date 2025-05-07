@@ -5,9 +5,8 @@ import java.lang.Math;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="TeleOP test", group="Linear OpMode")
+@TeleOp(name="TeleOP brat", group="Linear OpMode")
 
 /*
 * TO-DO LIST:
@@ -18,17 +17,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class test extends LinearOpMode {
 
-    private DcMotor rightFrontDrive = null;
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightBackDrive = null;
-    private DcMotor leftBackDrive = null;
-
     private DcMotor MotorIntakeOuttakeStanga = null;
     private DcMotor MotorIntakeOuttakeDreapta = null;
 
     private int DirectieMiscareBrat = 0;
     private double moveSpeed = 1;
-    private double speed = 1;
     private boolean wasGamepad1upPressed = false;
     private boolean wasGamepad1downPressed = false;
     private boolean wasGamepad1leftPressed = false;
@@ -37,21 +30,11 @@ public class test extends LinearOpMode {
     @Override
     public void runOpMode()
     {
+        MotorIntakeOuttakeDreapta = hardwareMap.get(DcMotor.class, "MotorBratDreapta");
         MotorIntakeOuttakeStanga = hardwareMap.get(DcMotor.class, "MotorBratStanga");
-        MotorIntakeOuttakeStanga = hardwareMap.get(DcMotor.class, "MotorBratDreapta");
-
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
 
         MotorIntakeOuttakeStanga.setDirection(DcMotor.Direction.FORWARD);
         MotorIntakeOuttakeDreapta.setDirection(DcMotor.Direction.REVERSE);
-
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -79,37 +62,6 @@ public class test extends LinearOpMode {
             telemetry.addData("Viteza Miscare Brat", moveSpeed);
 
             telemetry.update();
-
-
-            if (gamepad1.left_stick_x * gamepad1.left_stick_y != 0)
-            {
-                double max;
-
-                double straight = -gamepad1.left_stick_y;
-                double lateral = gamepad1.left_stick_x;
-                double orientation = gamepad1.right_stick_x;
-
-                double leftFrontPower = speed * (straight + lateral + orientation);
-                double rightFrontPower = speed * (straight - lateral - orientation);
-                double leftBackPower = speed * (straight - lateral + orientation);
-                double rightBackPower = speed * (straight + lateral - orientation);
-
-                max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-                max = Math.max(max, Math.abs(leftBackPower));
-                max = Math.max(max, Math.abs(rightBackPower));
-
-                if (max > 1.0) {
-                    leftFrontPower /= max;
-                    rightFrontPower /= max;
-                    leftBackPower /= max;
-                    rightBackPower /= max;
-                }
-
-                leftFrontDrive.setPower(leftFrontPower);
-                rightFrontDrive.setPower(rightFrontPower);
-                leftBackDrive.setPower(leftBackPower);
-                rightBackDrive.setPower(rightBackPower);
-            }
 
         }
 
