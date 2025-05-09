@@ -36,6 +36,11 @@ public class test extends LinearOpMode {
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -71,9 +76,19 @@ public class test extends LinearOpMode {
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
+
+            testManualRoti();
         }
 
 
+    }
+
+    private void testManualRoti()
+    {
+        if (gamepad1.dpad_up && gamepad1.dpad_left) leftFrontDrive.setPower(speed);
+        if (gamepad1.dpad_down && gamepad1.dpad_left) leftBackDrive.setPower(speed);
+        if (gamepad1.dpad_up && gamepad1.dpad_right) rightFrontDrive.setPower(speed);
+        if (gamepad1.dpad_down && gamepad1.dpad_right) rightBackDrive.setPower(speed);
     }
 
 
