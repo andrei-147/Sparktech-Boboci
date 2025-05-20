@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="TeleOP test", group="Linear OpMode")
+@TeleOp(name="Telek test", group="Linear OpMode")
 
 /*
 * TO-DO LIST:
@@ -68,7 +68,7 @@ public class test extends LinearOpMode {
             MotorIntakeOuttakeStanga.setPower(moveSpeed * DirectieMiscareBrat);
             MotorIntakeOuttakeDreapta.setPower(moveSpeed * DirectieMiscareBrat); */
 
-            if (gamepad1.dpad_up && !wasGamepad1upPressed) wasGamepad1upPressed = true;
+            /* if (gamepad1.dpad_up && !wasGamepad1upPressed) wasGamepad1upPressed = true;
             if (!gamepad1.dpad_up && wasGamepad1upPressed) moveSpeed = Math.min(moveSpeed + 0.1, 1);
             if (!gamepad1.dpad_up) wasGamepad1upPressed = false;
 
@@ -76,7 +76,7 @@ public class test extends LinearOpMode {
             if (!gamepad1.dpad_down && wasGamepad1downPressed) moveSpeed = Math.max(moveSpeed - 0.1, 0.1);
             if (!gamepad1.dpad_down) wasGamepad1downPressed = false;
 
-            telemetry.addData("Viteza Miscare Brat", moveSpeed);
+            telemetry.addData("Viteza Miscare Brat", moveSpeed); */
 
             telemetry.update();
 
@@ -94,7 +94,7 @@ public class test extends LinearOpMode {
                 double leftBackPower = speed * (straight - lateral + orientation);
                 double rightBackPower = speed * (straight + lateral - orientation);
 
-                /*  max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+                /* max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
                 max = Math.max(max, Math.abs(leftBackPower));
                 max = Math.max(max, Math.abs(rightBackPower));
 
