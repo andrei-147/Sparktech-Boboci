@@ -37,16 +37,16 @@ public class test extends LinearOpMode {
     @Override
     public void runOpMode()
     {
-        MotorIntakeOuttakeStanga = hardwareMap.get(DcMotor.class, "MotorBratStanga");
-        MotorIntakeOuttakeStanga = hardwareMap.get(DcMotor.class, "MotorBratDreapta");
+        //MotorIntakeOuttakeStanga = hardwareMap.get(DcMotor.class, "MotorBratStanga");
+        //MotorIntakeOuttakeStanga = hardwareMap.get(DcMotor.class, "MotorBratDreapta");
 
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
         leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
 
-        MotorIntakeOuttakeStanga.setDirection(DcMotor.Direction.FORWARD);
-        MotorIntakeOuttakeDreapta.setDirection(DcMotor.Direction.REVERSE);
+        //MotorIntakeOuttakeStanga.setDirection(DcMotor.Direction.FORWARD);
+        //MotorIntakeOuttakeDreapta.setDirection(DcMotor.Direction.REVERSE);
 
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -78,7 +78,7 @@ public class test extends LinearOpMode {
 
             telemetry.addData("Viteza Miscare Brat", moveSpeed); */
 
-            telemetry.update();
+            //telemetry.update();
 
 
            /* if (gamepad1.left_stick_x * gamepad1.left_stick_y != 0)
