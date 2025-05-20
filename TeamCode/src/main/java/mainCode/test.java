@@ -62,11 +62,11 @@ public class test extends LinearOpMode {
 
         while(opModeIsActive())
         {
-            DirectieMiscareBrat = 0;
+            /* DirectieMiscareBrat = 0;
             if (gamepad1.y) DirectieMiscareBrat += 1;
             if (gamepad1.a) DirectieMiscareBrat -= 1;
             MotorIntakeOuttakeStanga.setPower(moveSpeed * DirectieMiscareBrat);
-            MotorIntakeOuttakeDreapta.setPower(moveSpeed * DirectieMiscareBrat);
+            MotorIntakeOuttakeDreapta.setPower(moveSpeed * DirectieMiscareBrat); */
 
             if (gamepad1.dpad_up && !wasGamepad1upPressed) wasGamepad1upPressed = true;
             if (!gamepad1.dpad_up && wasGamepad1upPressed) moveSpeed = Math.min(moveSpeed + 0.1, 1);
@@ -81,9 +81,9 @@ public class test extends LinearOpMode {
             telemetry.update();
 
 
-            if (gamepad1.left_stick_x * gamepad1.left_stick_y != 0)
+           /* if (gamepad1.left_stick_x * gamepad1.left_stick_y != 0)
             {
-                double max;
+                double max; */
 
                 double straight = -gamepad1.left_stick_y;
                 double lateral = gamepad1.left_stick_x;
@@ -94,16 +94,16 @@ public class test extends LinearOpMode {
                 double leftBackPower = speed * (straight - lateral + orientation);
                 double rightBackPower = speed * (straight + lateral - orientation);
 
-                max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+                /* max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
                 max = Math.max(max, Math.abs(leftBackPower));
                 max = Math.max(max, Math.abs(rightBackPower));
 
-                if (max > 1.0) {
+                 if (max > 1.0) {
                     leftFrontPower /= max;
                     rightFrontPower /= max;
                     leftBackPower /= max;
                     rightBackPower /= max;
-                }
+                } */
 
                 leftFrontDrive.setPower(leftFrontPower);
                 rightFrontDrive.setPower(rightFrontPower);
