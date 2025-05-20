@@ -94,7 +94,7 @@ public class test extends LinearOpMode {
                 double leftBackPower = speed * (straight - lateral + orientation);
                 double rightBackPower = speed * (straight + lateral - orientation);
 
-                /* max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+                /*  max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
                 max = Math.max(max, Math.abs(leftBackPower));
                 max = Math.max(max, Math.abs(rightBackPower));
 
