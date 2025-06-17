@@ -1,5 +1,6 @@
 package mainCode.Componente;
 import java.lang.Math;
+import java.math.BigDecimal;
 
 import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,9 +24,12 @@ public class Brat {
     private double power = 0;
 
     // Variabile PID
-    private double Kp = 0;
-    private double Ki = 0;
-    private double Kd = 0;
+    private double D = 0;
+    private double P = 0;
+    private double error = 0;
+    private BigDecimal Kp = new BigDecimal("0.0080");
+    private BigDecimal Ki = new BigDecimal("0");
+    private BigDecimal Kd = new BigDecimal("0.0036");
     private double TemporaryPosition = 10;
     private double lastError = 0;
     private ElapsedTime timer = null;
@@ -45,36 +49,37 @@ public class Brat {
 
     private double PID(double pos)
     {
-        double derivative = 0;
+        error = pos - IOLeftMotorPos;
 
-        double error = pos - IOLeftMotorPos;
-
-        derivative = (error - lastError) / timer.seconds();
+        double derivative = (error - lastError) / timer.seconds();
 
         integralSum += (error + timer.seconds());
 
-        double out = (Kp * error) + (Ki * integralSum) + (Kd * derivative);
+        D = (Kd.doubleValue() * derivative);
+        P = (Kp.doubleValue() * error);
+
+        double out = P + /*(Ki.doubleValue() * integralSum)*/ + D;
 
         lastError = error;
-
+        //if (out < 0) out /= 2;
         return out;
     }
     private void IncrementVariables()
     {
         if (gamepad1.dpad_up && !wasGamepad1upPressed) wasGamepad1upPressed = true;
-        if (!gamepad1.dpad_up && wasGamepad1upPressed) Kp += 0.02;
+        if (!gamepad1.dpad_up && wasGamepad1upPressed) Kp = Kp.add(new BigDecimal("0.0002"));
         if (!gamepad1.dpad_up) wasGamepad1upPressed = false;
 
         if (gamepad1.dpad_down && !wasGamepad1downPressed) wasGamepad1downPressed = true;
-        if (!gamepad1.dpad_down && wasGamepad1downPressed) Kp -= 0.02;
+        if (!gamepad1.dpad_down && wasGamepad1downPressed) Kp = Kp.add(new BigDecimal("-0.0002"));
         if (!gamepad1.dpad_down) wasGamepad1downPressed = false;
 
         if (gamepad1.dpad_right && !wasGamepad1rightPressed) wasGamepad1rightPressed = true;
-        if (!gamepad1.dpad_right && wasGamepad1rightPressed) Kd += 0.02;
+        if (!gamepad1.dpad_right && wasGamepad1rightPressed) Kd = Kd.add(new BigDecimal("0.0002"));
         if (!gamepad1.dpad_right) wasGamepad1rightPressed = false;
 
         if (gamepad1.dpad_left && !wasGamepad1leftPressed) wasGamepad1leftPressed = true;
-        if (!gamepad1.dpad_left && wasGamepad1leftPressed) Kd -= 0.02;
+        if (!gamepad1.dpad_left && wasGamepad1leftPressed) Kd = Kd.add(new BigDecimal("-0.0002"));
         if (!gamepad1.dpad_left) wasGamepad1leftPressed = false;
 
         if (gamepad1.y && !wasGamepad1YPressed) wasGamepad1YPressed = true;
@@ -136,7 +141,9 @@ public class Brat {
         telemetry.addData("Kd", Kd);
         telemetry.addData("TempPos", TemporaryPosition);
         telemetry.addData("IsMoving", IsIOArmMoving);
-        telemetry.addData("PLSMOVE", PLSMOVE);
+        telemetry.addData("error", error);
+        telemetry.addData("P", P);
+        telemetry.addData("D", D);
         if (timer != null) telemetry.addData("timer", timer.seconds());
 
         telemetry.update();
@@ -159,6 +166,9 @@ public class Brat {
 
         MotorIORight.setDirection(DcMotor.Direction.FORWARD);
         MotorIOLeft.setDirection(DcMotor.Direction.REVERSE);
+
+        MotorIOLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        MotorIORight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void RunInsideLoop() {
