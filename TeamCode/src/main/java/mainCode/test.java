@@ -89,10 +89,10 @@ public class test extends LinearOpMode {
                 double lateral = gamepad1.left_stick_x;
                 double orientation = gamepad1.right_stick_x;
 
-                double leftFrontPower = speed * (straight + lateral + orientation);
+                double leftFrontPower = speed * (-straight + lateral + orientation);
                 double rightFrontPower = speed * (straight - lateral - orientation);
                 double leftBackPower = speed * (straight - lateral + orientation);
-                double rightBackPower = speed * (straight + lateral - orientation);
+                double rightBackPower = speed * (-straight + lateral - orientation);
 
                 /* max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
                 max = Math.max(max, Math.abs(leftBackPower));
