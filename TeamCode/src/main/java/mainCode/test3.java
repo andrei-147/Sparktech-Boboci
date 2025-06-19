@@ -11,12 +11,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.math.BigDecimal;
 
+enum Direction {Front, LeftFront, RightFront, Left, Right, LeftBack, Back, RightBack, Stopped};
+enum Rotation {Left, Right, Stopped};
+
 @TeleOp(name="TeleOP brake", group="Test")
 
 public class test3 extends LinearOpMode {
 
     private static double BrakeMultiplier = -1;
     private static double ProportionalMultiplier = 1;
+    private static double rfMultiplier = 1;
+    private static double lfMultiplier = 1;
+    private static double rbMultiplier = 1;
+    private static double lbMultiplier = 1;
     private static double FullSpeedTime = 2500;
     private static double BrakeTimeMs = 1000;
     private static ElapsedTime timer = null;
@@ -33,6 +40,8 @@ public class test3 extends LinearOpMode {
     private boolean wasGamepad1downPressed = false;
     private boolean wasGamepad1leftPressed = false;
     private boolean wasGamepad1rightPressed = false;
+    private Direction DirectionBeforeBrake = Direction.Stopped;
+    private Rotation RotationBeforeBrake = Rotation.Stopped;
 
     @Override
     public void runOpMode() {
@@ -102,6 +111,7 @@ public class test3 extends LinearOpMode {
                     leftBackPower /= max;
                     rightBackPower /= max;
                 }
+                CalculateWheelsMultiplier();
             }
             if (IsBraking && BrakeTimer.milliseconds() >= BrakeTimeMs)
                 IsBraking = false;
@@ -112,12 +122,13 @@ public class test3 extends LinearOpMode {
                 lbPower = leftBackPower;
                 rfPower = rightFrontPower;
                 rbPower = rightBackPower;
+                UpdateDirection();
             }
 
-            leftFrontDrive.setPower(leftFrontPower * ProportionalMultiplier * BrakeMultiplier);
-            rightFrontDrive.setPower(rightFrontPower * ProportionalMultiplier * BrakeMultiplier);
-            leftBackDrive.setPower(leftBackPower * ProportionalMultiplier * BrakeMultiplier);
-            rightBackDrive.setPower(rightBackPower * ProportionalMultiplier * BrakeMultiplier);
+            leftFrontDrive.setPower(leftFrontPower * ProportionalMultiplier * BrakeMultiplier * ((IsBraking ? 1 : 1/lfMultiplier) * lfMultiplier));
+            rightFrontDrive.setPower(rightFrontPower * ProportionalMultiplier * BrakeMultiplier * ((IsBraking ? 1 : 1/rfMultiplier) * rfMultiplier));
+            leftBackDrive.setPower(leftBackPower * ProportionalMultiplier * BrakeMultiplier * ((IsBraking ? 1 : 1/lbMultiplier) * lbMultiplier));
+            rightBackDrive.setPower(rightBackPower * ProportionalMultiplier * BrakeMultiplier * ((IsBraking ? 1 : 1/rbMultiplier) * rbMultiplier));
 
             UpdateTelemetry();
         }
@@ -164,7 +175,90 @@ public class test3 extends LinearOpMode {
         tel.addLine();
         tel.addData("BrakeMultiplier", BrakeMultiplier);
         tel.addData("ProportionalMultiplier", ProportionalMultiplier);
+        tel.addLine();
+        tel.addData("Direction", DirectionBeforeBrake);
+        tel.addData("Rotation", RotationBeforeBrake);
         tel.update();
     }
-}
 
+    private void UpdateDirection() {
+        if (gamepad1.left_stick_x > 0 && gamepad1.left_stick_y == 0) {
+            DirectionBeforeBrake = Direction.Right;
+        }
+        else if (gamepad1.left_stick_x < 0 && gamepad1.left_stick_y == 0) {
+            DirectionBeforeBrake = Direction.Left;
+        }
+        else if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y > 0) {
+            DirectionBeforeBrake = Direction.Front;
+        }
+        else if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y < 0) {
+            DirectionBeforeBrake = Direction.Back;
+        }
+        else if (gamepad1.left_stick_x < 0 && gamepad1.left_stick_y > 0) {
+            DirectionBeforeBrake = Direction.LeftFront;
+        }
+        else if (gamepad1.left_stick_x > 0 && gamepad1.left_stick_y > 0) {
+            DirectionBeforeBrake = Direction.RightFront;
+        }
+        else if (gamepad1.left_stick_x < 0 && gamepad1.left_stick_y < 0) {
+            DirectionBeforeBrake = Direction.LeftBack;
+        }
+        else if (gamepad1.left_stick_x > 0 && gamepad1.left_stick_y < 0) {
+            DirectionBeforeBrake = Direction.RightBack;
+        }
+        else DirectionBeforeBrake = Direction.Stopped;
+
+        if (gamepad1.right_stick_x > 0)
+            RotationBeforeBrake = Rotation.Right;
+        else if (gamepad1.right_stick_x < 0)
+            RotationBeforeBrake = Rotation.Left;
+        else RotationBeforeBrake = Rotation.Stopped;
+    }
+
+    private void CalculateWheelsMultiplier() {
+        switch (DirectionBeforeBrake) {
+            case Stopped:
+                rfMultiplier = 1;
+                lfMultiplier = 1;
+                rbMultiplier = 1;
+                lbMultiplier = 1;
+                break;
+            case Front:
+                rfMultiplier = 0.25;
+                lfMultiplier = 0.25;
+                rbMultiplier = 1;
+                lbMultiplier = 1;
+                break;
+            case Back:
+                rfMultiplier = 1;
+                lfMultiplier = 1;
+                rbMultiplier = 0.25;
+                lbMultiplier = 0.25;
+                break;
+            case Left:
+                rfMultiplier = 1;
+                lfMultiplier = 0.25;
+                rbMultiplier = 1;
+                lbMultiplier = 0.25;
+                break;
+            case Right:
+                rfMultiplier = 0.25;
+                lfMultiplier = 1;
+                rbMultiplier = 0.25;
+                lbMultiplier = 1;
+                break;
+            default:
+                rfMultiplier = 0.8;
+                lfMultiplier = 0.8;
+                rbMultiplier = 0.8;
+                lbMultiplier = 0.8;
+                break;
+        }
+        if (RotationBeforeBrake != Rotation.Stopped) {
+            rfMultiplier = 0.7;
+            lfMultiplier = 0.7;
+            rbMultiplier = 0.7;
+            lbMultiplier = 0.7;
+        }
+    }
+}
