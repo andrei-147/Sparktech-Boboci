@@ -178,6 +178,12 @@ public class test3 extends LinearOpMode {
         tel.addLine();
         tel.addData("Direction", DirectionBeforeBrake);
         tel.addData("Rotation", RotationBeforeBrake);
+        tel.addLine();
+        tel.addData("leftstickx", gamepad1.left_stick_x);
+        tel.addData("leftsticky", gamepad1.left_stick_y);
+        tel.addLine();
+        tel.addData("rightstickx", gamepad1.right_stick_x);
+        tel.addData("rightsticky", gamepad1.right_stick_y);
         tel.update();
     }
 
